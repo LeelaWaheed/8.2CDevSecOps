@@ -1,3 +1,4 @@
+// Trigger commit for Jenkins demo
 module.exports = {
 
   ran_no : function ( min, max ){
