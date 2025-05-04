@@ -4,7 +4,7 @@ pipeline {
   stages { 
     stage('Checkout') { 
       steps { 
-        git branch: 'main', url: ' https://github.com/LeelaWaheed/8.2CDevSecOps.git' 
+        git branch: 'main', url: 'https://github.com/LeelaWaheed/8.2CDevSecOps.git' 
       } 
     } 
  
@@ -32,11 +32,13 @@ pipeline {
         sh 'npm audit || true' // This will show known CVEs in the output 
       } 
     } 
-   stage('SonarCloud Analysis') { 
-	steps { 
-	   sh 'sonar-scanner'
 
-	} 
-      } 	 
+    stage('SonarCloud Analysis') { 
+      steps { 
+        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+          sh 'sonar-scanner'
+        }
+      } 
+    } 
   } 
-} 
+}
