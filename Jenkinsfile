@@ -1,33 +1,42 @@
-pipeline {
-  agent any
+pipeline { 
+  agent any 
+ 
+  stages { 
+    stage('Checkout') { 
+      steps { 
+        git branch: 'main', url: ' https://github.com/your_github_username/8.2CDevSecOps.git' 
+      } 
+    } 
+ 
+    stage('Install Dependencies') { 
+      steps { 
+        sh 'npm install' 
+      } 
+    } 
+ 
+    stage('Run Tests') { 
+      steps { 
+        sh 'npm test || true' // Allows pipeline to continue despite test failures 
+      } 
+    } 
+ 
+    stage('Generate Coverage Report') { 
+      steps { 
+        // Ensure coverage report exists 
+        sh 'npm run coverage || true' 
+      } 
+    } 
+ 
+    stage('NPM Audit (Security Scan)') { 
+      steps { 
+        sh 'npm audit || true' // This will show known CVEs in the output 
+      } 
+    } 
+   stage('SonarCloud Analysis') { 
+	steps { 
+	   sh 'sonar-scanner'
 
-  environment {
-    SONAR_TOKEN = credentials('SONAR_TOKEN') // You can skip this stage if not using Sonar yet
-  }
-
-  stages {
-    stage('Install Dependencies') {
-      steps {
-        sh 'npm install'
-      }
-    }
-
-    stage('Run Tests') {
-      steps {
-        sh 'npm test || true'
-      }
-    }
-
-    stage('Security Scan') {
-      steps {
-        sh 'npm audit || true'
-      }
-    }
-
-    stage('Code Quality Check') {
-      steps {
-        echo 'SonarCloud analysis would go here (optional for now)'
-      }
-    }
-  }
-}
+	} 
+      } 	 
+  } 
+} 
